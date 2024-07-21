@@ -157,11 +157,14 @@ pipeline {
                     fi
                     '''
                     
+                  
                     // Run the new Flask app container
                     sh 'docker run -d -p 5000:5000 --name flask-app flask-app'
+                    
+                    
                 }
             }
-        
+        }
     }
     
     post {
