@@ -56,11 +56,18 @@ pipeline {
     stage('Build Flask Image') {
             steps {
                 dir('flask') {
-                    
-                    // Stop any running container on port 5000
-                    sh 'docker ps --filter publish=5000 --format "{{.ID}}" | xargs -r docker stop'
-                    // Remove the stopped container
-                    sh 'docker ps -a --filter status=exited --filter publish=5000 --format "{{.ID}}" | xargs -r docker rm'
+                    // Stop and remove the existing flask-app container if it exists
+                    sh '''
+                    CONTAINER_ID=$(docker ps -aq --filter name=flask-app)
+                    if [ -n "$CONTAINER_ID" ]; then
+                        echo "Stopping existing container: $CONTAINER_ID"
+                        docker stop $CONTAINER_ID || true
+                        echo "Removing existing container: $CONTAINER_ID"
+                        docker rm $CONTAINER_ID || true
+                    else
+                        echo "No existing container found"
+                    fi
+                    '''
                     // Build the new flask-app image
                     sh 'docker build -t flask-app .'
                 }
