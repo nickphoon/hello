@@ -83,17 +83,8 @@ pipeline {
             steps {
                 dir('flask') {
                     script {
-                        // Start the Selenium container
-                        sh 'docker run -d --name selenium -p 4444:4444 -v /dev/shm:/dev/shm selenium/standalone-chrome'
-                        // Give Selenium a moment to start
-                        sh 'sleep 10'
-
                         // Run the UI tests
                         sh '. $VENV_PATH/bin/activate && pytest --junitxml=ui_test_results.xml test_ui.py'
-
-                        // Stop Selenium container
-                        sh 'docker stop selenium'
-                        sh 'docker rm selenium'
                     }
                 }
             }
