@@ -6,7 +6,7 @@ pipeline {
         FLASK_APP = 'workspace/flask/app.py'  // Correct path to the Flask app
         PATH = "$VENV_PATH/bin:$PATH"
         SONARQUBE_SCANNER_HOME = tool name: 'SonarQube Scanner'
-        SONARQUBE_TOKEN = 'sqp_61ff14cfe86863be8f964b1ef92094b3a3fc5323'  // Set your new SonarQube token here
+        SONARQUBE_TOKEN = 'sqp_f9d0c566e2b4e306bcac4e8a78f13f5e5bd446a4'  // Set your new SonarQube token here
         DEPENDENCY_CHECK_HOME = '/var/jenkins_home/tools/org.jenkinsci.plugins.DependencyCheck.tools.DependencyCheckInstallation/OWASP_Dependency-Check/dependency-check'
     }
     
@@ -42,16 +42,18 @@ pipeline {
         }
         
         stage('OWASP Dependency-Check Vulnerabilities') {
-      steps {
+    steps {
         dependencyCheck additionalArguments: ''' 
                     -o './'
                     -s './'
                     -f 'ALL' 
-                    --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                    --prettyPrint
+                    --nvdApiKey '7817ec75-4dd8-41ad-a186-a566708de4f3' ''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
         
         dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-      }
     }
+}
+
         
         stage('UI Testing') {
             steps {
@@ -123,11 +125,6 @@ pipeline {
                     sh 'docker run -d -p 5000:5000 flask-app'
                     
                     sh 'sleep 10'
-                    sh 'chmod +x workspace/jenkins/scripts/deploy.sh'
-                    sh 'workspace/jenkins/scripts/deploy.sh'
-                    input message: 'Finished using the web site? (Click "Proceed" to continue)'
-                    sh 'chmod +x workspace/jenkins/scripts/kill.sh'
-                    sh 'workspace/jenkins/sciprts/kill.sh'
                 }
             }
         }
