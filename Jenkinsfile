@@ -136,6 +136,11 @@ pipeline {
             steps {
                 script {
                     echo 'Deploying Flask App...'
+                    // Stop and remove the flask-app-test container
+                    sh '''
+                    docker ps -q --filter name=flask-app-test | grep -q . && docker stop flask-app-test || true
+                    docker ps -a -q --filter name=flask-app-test | grep -q . && docker rm flask-app-test || true
+                    '''
                     // Stop any running container on port 5000
                     sh 'docker ps --filter publish=5000 --format "{{.ID}}" | xargs -r docker stop'
                     // Remove the stopped container
@@ -143,7 +148,7 @@ pipeline {
                     // Run the new Flask app container
                     sh 'docker run -d -p 5000:5000 flask-app'
                     
-                    sh 'sleep 10'
+                    
                 }
             }
         }
