@@ -58,7 +58,7 @@ pipeline {
                 dir('flask') {
                     // Stop and remove the existing flask-app container if it exists
                     sh '''
-                    CONTAINER_ID=$(docker ps -aq --filter name=flask-app-test)
+                    CONTAINER_ID=$(docker ps -aq --filter name=flask-app)
                     if [ -n "$CONTAINER_ID" ]; then
                         echo "Stopping existing container: $CONTAINER_ID"
                         docker stop $CONTAINER_ID || true
@@ -78,7 +78,7 @@ pipeline {
             steps {
                 script {
                     // Run the Flask app container
-                    sh 'docker run -d -p 5000:5000 --name flask-app-test flask-app'
+                    sh 'docker run -d -p 5000:5000 --name flask-app flask-app'
                     // Give the server a moment to start
                     sh 'sleep 10'
                 }
