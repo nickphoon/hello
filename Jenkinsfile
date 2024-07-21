@@ -102,7 +102,7 @@ pipeline {
                     dir('workspace/flask') {
                         sh '''
                         ${SONARQUBE_SCANNER_HOME}/bin/sonar-scanner \
-                        -Dsonar.projectKey=Lab \
+                        -Dsonar.projectKey=Quiz \
                         -Dsonar.sources=. \
                         -Dsonar.inclusions=app.py \
                         -Dsonar.host.url=http://sonarqube:9000 \
