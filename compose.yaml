@@ -15,19 +15,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock # Allow Jenkins to communicate with the Docker daemon
     # environment:
     #   - JAVA_OPTS=-Djenkins.install.runSetupWizard=false # Disable Jenkins setup wizard
-  selenium-hub:
-    image: selenium/hub
-    ports:
-      - "4444:4444"
 
-  chrome:
-    image: selenium/node-chrome
-    depends_on:
-      - selenium-hub
-    environment:
-      - HUB_HOST=selenium-hub
-    links:
-      - selenium-hub
   # SonarQube service configuration
   sonarqube:
     image: sonarqube:lts # Use the Long Term Support (LTS) version of SonarQube

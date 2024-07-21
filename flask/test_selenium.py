@@ -9,16 +9,12 @@ class FlaskAppTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         options = Options()
-        options.add_argument("--headless")
+        options.add_argument("--headless")  # Run in headless mode
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--remote-debugging-port=9222")
-        
-        # Set up remote WebDriver to use Selenium Grid
-        cls.driver = webdriver.Remote(
-            command_executor='http://selenium-hub:4444/wd/hub',
-            options=options
-        )
+        options.add_argument('--remote-debugging-port=9222')
+        cls.driver = webdriver.Chrome(options=options)
         cls.driver.implicitly_wait(10)
         cls.base_url = 'http://127.0.0.1:5000'
 
