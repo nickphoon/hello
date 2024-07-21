@@ -57,6 +57,7 @@ pipeline {
         
         stage('UI Testing') {
             steps {
+                dir('flask') {
                 script {
                     // Start the Flask app in the background
                     sh '. $VENV_PATH/bin/activate && FLASK_APP=$FLASK_APP flask run &'
@@ -76,6 +77,7 @@ pipeline {
                     '''
                     // Stop the Flask app
                     sh 'pkill -f "flask run"'
+                }
                 }
             }
         }
