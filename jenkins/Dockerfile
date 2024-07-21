@@ -23,14 +23,6 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --d
     apt-get install -y google-chrome-stable && \
     rm -rf /var/lib/apt/lists/*
 
-# Create a virtual environment and install WebDriverManager
-RUN python3 -m venv /opt/venv && \
-    /opt/venv/bin/pip install --upgrade pip && \
-    /opt/venv/bin/pip install webdriver-manager
-
-# Set environment variables for the virtual environment
-ENV PATH="/opt/venv/bin:$PATH"
-
 # Configure Git
 ARG GIT_USER_NAME
 ARG GIT_USER_EMAIL
