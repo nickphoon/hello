@@ -57,13 +57,7 @@ pipeline {
         
         
         
-        stage('Integration Testing') {
-            steps {
-                dir('flask') {
-                    sh '. $VENV_PATH/bin/activate && pytest --junitxml=integration-test-results.xml'
-                }
-            }
-        }
+        
         
         stage('Build Docker Image') {
             steps {
@@ -102,6 +96,13 @@ pipeline {
                     sh 'docker run -d -p 5000:5000 flask-app'
                     
                     sh 'sleep 10'
+                }
+            }
+        }
+        stage('Integration Testing') {
+            steps {
+                dir('flask') {
+                    sh '. $VENV_PATH/bin/activate && pytest --junitxml=integration-test-results.xml'
                 }
             }
         }
