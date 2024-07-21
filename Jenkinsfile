@@ -53,7 +53,7 @@ pipeline {
         dependencyCheckPublisher pattern: 'dependency-check-report.xml'
     }
 }
-    stage('Build Docker Image') {
+    stage('Build Flask Image') {
             steps {
                 dir('flask') {
                     // Stop and remove the existing container if it exists
@@ -66,7 +66,7 @@ pipeline {
             }
         }
 
-        stage('Run Flask App in Docker') {
+        stage('Build Flask App') {
             steps {
                 script {
                     // Run the Flask app container
