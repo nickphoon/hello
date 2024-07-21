@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        VENV_PATH = 'venv'
+        VENV_PATH = 'workspace/flask/venv'
         FLASK_APP = 'workspace/flask/app.py'  // Correct path to the Flask app
         PATH = "$VENV_PATH/bin:$PATH"
         SONARQUBE_SCANNER_HOME = tool name: 'SonarQube Scanner'
@@ -57,8 +57,7 @@ pipeline {
         
         stage('UI Testing') {
             steps {
-                dir('workspace'){
-script {
+                script {
                     // Start the Flask app in the background
                     sh '. $VENV_PATH/bin/activate && FLASK_APP=$FLASK_APP flask run &'
                     // Give the server a moment to start
@@ -78,8 +77,6 @@ script {
                     // Stop the Flask app
                     sh 'pkill -f "flask run"'
                 }
-                }
-                
             }
         }
         
