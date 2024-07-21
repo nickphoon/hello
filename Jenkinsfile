@@ -105,20 +105,16 @@ pipeline {
                 }
             }
         }
-        stage('UI Test') {
-            
-                   
-               
+         stage('UI Test') {
             steps {
                 dir('flask') {
-                script {
-                    docker.image('selenium/standalone-chrome').inside {
-                        sh '. $VENV_PATH/bin/activate && pytest test_ui.py'
+                    script {
+                        docker.image('selenium/standalone-chrome').inside('-v /dev/shm:/dev/shm') {
+                            sh '. $VENV_PATH/bin/activate && pytest test_ui.py --junitxml=ui_test_results.xml'
+                        }
                     }
                 }
             }
-            } 
-        }
     }
     
     post {
