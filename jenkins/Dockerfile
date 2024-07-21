@@ -16,20 +16,16 @@ RUN curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-c
 # Add Jenkins user to Docker group
 RUN usermod -aG docker jenkins
 
-# Install Chrome
+# Install the latest Google Chrome
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg && \
     echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list && \
     apt-get update && \
     apt-get install -y google-chrome-stable && \
     rm -rf /var/lib/apt/lists/*
 
-# Fetch the installed Google Chrome version
-RUN CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+\.\d+') && \
-    echo "Installed Google Chrome version: $CHROME_VERSION"
-
-# Install ChromeDriver
-RUN CHROME_DRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
-    wget -N https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip -P /tmp && \
+# Install the latest ChromeDriver
+RUN LATEST_CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE) && \
+    wget -N https://chromedriver.storage.googleapis.com/$LATEST_CHROMEDRIVER_VERSION/chromedriver_linux64.zip -P /tmp && \
     unzip /tmp/chromedriver_linux64.zip -d /tmp && \
     mv /tmp/chromedriver /usr/local/bin/chromedriver && \
     chmod +x /usr/local/bin/chromedriver && \
