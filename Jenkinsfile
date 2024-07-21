@@ -56,6 +56,11 @@ pipeline {
     stage('Build Docker Image') {
             steps {
                 dir('flask') {
+                    // Stop and remove the existing container if it exists
+                    sh '''
+                    docker ps -q --filter name=flask-app-test | grep -q . && docker stop flask-app-test || true
+                    docker ps -a -q --filter name=flask-app-test | grep -q . && docker rm flask-app-test || true
+                    '''
                     sh 'docker build -t flask-app .'
                 }
             }
