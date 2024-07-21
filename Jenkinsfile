@@ -19,7 +19,9 @@ pipeline {
         
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/nickphoon/hello.git'
+                
+                    git branch: 'main', url: 'https://github.com/nickphoon/hello.git'
+                
             }
         }
         
@@ -40,19 +42,18 @@ pipeline {
         }
         
         stage('OWASP Dependency-Check Vulnerabilities') {
-            steps {
-                dependencyCheck additionalArguments: ''' 
-                        -o './'
-                        -s './'
-                        -f 'ALL' 
-                        --prettyPrint
-                        --nvdApiKey '7817ec75-4dd8-41ad-a186-a566708de4f3' ''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-            }
-        }
+    steps {
+        dependencyCheck additionalArguments: ''' 
+                    -o './'
+                    -s './'
+                    -f 'ALL' 
+                    --prettyPrint
+                    --nvdApiKey '7817ec75-4dd8-41ad-a186-a566708de4f3' ''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
         
-        stage('Build Docker Image') {
+        dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+    }
+}
+    stage('Build Docker Image') {
             steps {
                 dir('flask') {
                     sh 'docker build -t flask-app .'
@@ -70,6 +71,34 @@ pipeline {
                 }
             }
         }
+
+        
+        stage('UI Testing') {
+            steps {
+                dir('flask') {
+                script {
+                    // Start the Flask app in the background
+                    sh '. $VENV_PATH/bin/activate && FLASK_APP=$FLASK_APP flask run &'
+                    // Give the server a moment to start
+                    sh 'sleep 5'
+                    // Debugging: Check if the Flask app is running
+                    sh 'curl -s http://127.0.0.1:5000 || echo "Flask app did not start"'
+                    
+                    // Test a strong password
+                    sh '''
+                    curl -s -X POST -F "password=StrongPass123" http://127.0.0.1:5000 | grep "Welcome"
+                    '''
+                    
+                    // Test a weak password
+                    sh '''
+                    curl -s -X POST -F "password=password" http://127.0.0.1:5000 | grep "Password does not meet the requirements"
+                    '''
+                    // Stop the Flask app
+                    sh 'pkill -f "flask run"'
+                }
+                }
+            }
+        }
         
         stage('Integration Testing') {
             steps {
@@ -79,22 +108,7 @@ pipeline {
             }
         }
         
-        stage('UI Testing with Selenium') {
-            steps {
-                dir('flask') {
-                    script {
-                        // Run the UI tests
-                        sh '. $VENV_PATH/bin/activate && pytest --junitxml=ui_test_results.xml test_ui.py'
-                    }
-                }
-            }
-            post {
-                always {
-                    junit 'ui_test_results.xml'
-                    archiveArtifacts artifacts: 'ui_test_results.xml', allowEmptyArchive: true
-                }
-            }
-        }
+        
         
         stage('SonarQube Analysis') {
             steps {
