@@ -57,20 +57,12 @@ pipeline {
         
         stage('UI Testing') {
             steps {
-                
                 dir('flask') {
                 script {
-                    docker.image('selenium/standalone-chrome').inside('-v /dev/shm:/dev/shm') {
-                            // Start the Flask app in the background
-                        sh '. $VENV_PATH/bin/activate && FLASK_APP=$FLASK_APP flask run &'
-                        // Give the server a moment to start
-                        sh 'sleep 5'
-                        sh '. $VENV_PATH/bin/activate && pytest test_ui.py --junitxml=ui_test_results.xml'
-                    }
-                    // // Start the Flask app in the background
-                    // sh '. $VENV_PATH/bin/activate && FLASK_APP=$FLASK_APP flask run &'
-                    // // Give the server a moment to start
-                    // sh 'sleep 5'
+                    // Start the Flask app in the background
+                    sh '. $VENV_PATH/bin/activate && FLASK_APP=$FLASK_APP flask run &'
+                    // Give the server a moment to start
+                    sh 'sleep 5'
                     // Debugging: Check if the Flask app is running
                     sh 'curl -s http://127.0.0.1:5000 || echo "Flask app did not start"'
                     
