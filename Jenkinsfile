@@ -55,16 +55,7 @@ pipeline {
 }
 
         
-        stage('UI Testing with Selenium') {
-            steps {
-                script {
-                    // Run Selenium tests
-                    dir('workspace/flask') {
-                        sh '. $VENV_PATH/bin/activate && python3 test_selenium.py'
-                    }
-                }
-            }
-        }
+        
         
         stage('Integration Testing') {
             steps {
@@ -111,6 +102,16 @@ pipeline {
                     sh 'docker run -d -p 5000:5000 flask-app'
                     
                     sh 'sleep 10'
+                }
+            }
+        }
+        stage('UI Testing with Selenium') {
+            steps {
+                script {
+                    // Run Selenium tests
+                    dir('workspace/flask') {
+                        sh '. $VENV_PATH/bin/activate && python3 test_selenium.py'
+                    }
                 }
             }
         }
