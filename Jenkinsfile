@@ -106,10 +106,11 @@ pipeline {
             }
         }
         stage('UI Test') {
-            dir('flask') {
+            
                    
                
             steps {
+                dir('flask') {
                 script {
                     docker.image('selenium/standalone-chrome').inside {
                         sh '. $VENV_PATH/bin/activate && pytest test_ui.py'
