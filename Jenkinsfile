@@ -20,7 +20,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 
-                    git branch: 'main', url: 'http://localhost:3000/nickphoon/hello.git'
+                    git credentialsId:'1b6e3366-a3ed-45ba-bed6-b53b3a1107e8', git branch: 'main', url: 'http://git-server:3000/NicholasPhoonKaiJin/hello.git'
                 
             }
         }
