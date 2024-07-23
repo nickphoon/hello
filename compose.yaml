@@ -35,8 +35,27 @@ services:
       POSTGRES_PASSWORD: sonarqube # Set the PostgreSQL password
       POSTGRES_DB: sonarqube # Set the name of the database
 
+  # NGINX service configuration
   nginx:
     image: nginx:latest
+    ports:
+      - "80:80" # Map host port 80 to container port 80 for HTTP traffic
+    depends_on:
+      - jenkins
+      - sonarqube
+  gitea:
+    image: gitea/gitea:latest
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - DB_TYPE=sqlite3
+    volumes:
+      - ./gitea:/data
+    ports:
+      - "3000:3000"
+      - "222:22"
+    restart: always
 
 volumes:
   jenkins_home: # Define a Docker volume to persist Jenkins data

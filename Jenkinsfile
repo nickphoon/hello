@@ -20,7 +20,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 
-                    git branch: 'main', url: 'https://github.com/nickphoon/hello.git'
+                    git branch: 'main', url: 'http://localhost:3000/nickphoon/hello.git'
                 
             }
         }
